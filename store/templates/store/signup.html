@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h1>Регистрация</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+</div>
+{% endblock %}

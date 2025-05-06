@@ -1,0 +1,22 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Продукты{% endblock %}
+
+{% block content %}
+
+<div class="product-list">
+
+    {% for product in products %}
+    <div class="product-item">
+        <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+        {% if product.photo %}
+        <br><img src="{{ product.photo.url }}" alt="{{ product.name }}" style="width:150px; height:auto;">
+        {% endif %}
+        <div>
+            <p>Цена: {{ product.price }}</p>
+            <a href="{% url 'product_detail' product.id %}">Подробнее</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

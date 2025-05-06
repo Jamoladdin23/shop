@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h2>🛒 Ваша корзина</h2>
+
+{% if cart_items %}
+    {% for item in cart_items %}
+        <div class="cart-item">
+            <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" style="width: 100px; height: auto;">  <!-- ✅ Добавляем фото -->
+            <p><strong>{{ item.product.name }}</strong></p>
+            <p>Количество: {{ item.quantity }}</p>
+            <p>Цена: {{ item.product.price }}</p>
+            <form action="{% url 'update_cart_item' item.id %}" method="post">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}">
+                <button type="submit">Обновить</button>
+            </form>
+            <a href="{% url 'remove_cart_item' item.id %}" class="delete-btn">Удалить</a>
+        </div>
+    {% endfor %}
+    <p><strong>Итоговая сумма:</strong> {{ total_price }}</p>
+    <a href="{% url 'place_order' %}" class="checkout-btn">Оформить заказ</a>
+{% else %}
+    <p>Корзина пуста.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+
+
+    <title>{% block title %}Мой Проект{% endblock %}</title>
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'apple-touch-icon-precomposed.png' %}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}"> <!-- Для анимаций -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/cart.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/rivets-cart.min.js"></script>
+    <script src="{% static 'js/aos.min.js' %}" defer></script>
+    <script src="{% static 'js/utils.js' %}" defer></script>
+<!--    <script src="{% static 'js/cart.js' %}"></script>-->
+    <script src="{% static 'js/order.js' %}" defer></script>
+    <script src="{% static 'js/cart.js' %}" defer></script>
+
+    <script src="{% static 'js/filters.js' %}"></script>
+    <script src="{% static 'js/animations.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.min.js"></script>
+
+
+
+
+</head>
+<body>
+
+
+<div class="header">
+    <div data-aos="fade-up">
+        <h3>Urganch №1 Gamburghonasi</h3>
+    </div>
+
+    <div>
+
+        <h5><a href="{% url 'product_list' %}">Dastavka zakaz</a></h5>
+        <h5><a href="{% url 'category_list' %}">Kategoriya</a></h5>
+
+    </div>
+
+
+    <div>
+        {% if user.is_authenticated %}
+        <p> {{ user.username }}!</p>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Chiqish</button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="button">Girish</a>
+        <a href="{% url 'signup' %}" class="button">Sign-up</a>
+        {% endif %}
+        <a href="{% url 'cart_view' %}" class="button">Karzina</a>
+
+    </div>
+</div>
+
+<div class="container">
+    <main>
+        {% block content %}
+        <!-- Здесь будет контент дочерних шаблонов -->
+        {% endblock %}
+    </main>
+</div>
+
+
+<footer>
+    <p>&copy;  Мой Проект</p>
+</footer>
+
+</body>
+</html>

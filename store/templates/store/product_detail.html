@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <h2>{{ product.name }}</h2>
+    <p>Цена: {{ product.price }}</p>
+
+    {% if product.photo %}
+    <img src="{{ product.photo.url }}" alt="{{ product.name }}" style="width:300px; height:auto;">
+    {% endif %}
+
+    <div class="product-gallery">
+        {% for image in product.images.all %}
+            <img src="{{ image.image.url }}" alt="Фото {{ product.name }}" class="gallery-image" style="width:100px; height:auto;">
+        {% endfor %}
+    </div>
+
+    <p>Описание: {{ product.description }}</p>
+
+    <!-- CSRF-токен для JavaScript -->
+    <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+
+
+    <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" id="order-button">Заказать продукт</button>
+
+    </form>
+    <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+
+
+</div>
+
+{% endblock %}
+

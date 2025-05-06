@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "aos": "^2.3.4",
+    "shopify-cartjs": "^1.1.0"
+  }
+}

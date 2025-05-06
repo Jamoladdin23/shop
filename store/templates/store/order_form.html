@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<form id="order-form" method="POST">
+    {% csrf_token %}
+    <label for="name">Имя:</label>
+    <input type="text" name="recipient_name" required>
+
+    <label for="address">Адрес:</label>
+    <textarea name="address" required></textarea>
+
+    <label for="phone_number">Телефон:</label>
+    <input type="text" name="phone_number" required>
+
+    <button type="submit">Оформить заказ</button>
+</form>
+
+{% endblock %}

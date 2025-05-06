@@ -1,0 +1,33 @@
+{% extends 'store/base.html' %}
+{% load static  %}
+
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<style>
+    #order-form {
+        display: block !important;
+    }
+</style>
+
+<h2>Оформление заказа</h2>
+<button id="open-order-form">Заполнить заказ</button>
+
+
+<form id="order-form" method="post" action="{% url 'place_order' %}" style="display: none;">
+    {% csrf_token %}
+
+    <label for="recipient_name">Имя получателя:</label>
+    <input type="text" name="recipient_name" id="recipient_name" placeholder="Введите имя" required>
+
+    <label for="address">Адрес доставки:</label>
+    <input type="text" name="address" id="address" placeholder="Введите адрес" required>
+
+    <label for="phone_number">Телефон:</label>
+    <input type="tel" name="phone_number" id="phone_number" placeholder="Введите телефон" required>
+
+    <button type="submit">Оформить заказ</button>
+</form>
+
+{% endblock %}
