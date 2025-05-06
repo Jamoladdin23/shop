@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function (event) {
     const orderForm = document.getElementById("order-form");
 
@@ -11,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 method: "POST",
                 body: formData,
                 headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json"
                 }
             }).then(response => response.json())
               .then(data => {

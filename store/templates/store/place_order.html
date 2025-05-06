@@ -15,7 +15,7 @@
 <button id="open-order-form">Заполнить заказ</button>
 
 
-<form id="order-form" method="post" action="{% url 'place_order' %}" style="display: none;">
+<form id="order-form" method="POST" action="{% url 'place_order' %}" style="display: none;">
     {% csrf_token %}
 
     <label for="recipient_name">Имя получателя:</label>

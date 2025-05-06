@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
+
 
 # Модель категории продукта
 class Category(models.Model):
@@ -72,7 +74,8 @@ class Order(models.Model):
     address = models.TextField()  # Адрес доставки
     phone_number = models.CharField(max_length=15)  # Номер телефона
     email = models.EmailField(blank=True, null=True)  # Email
-    created_at = models.DateTimeField(auto_now_add=True)  # Дата заказа
+    created_at = models.DateTimeField(default=now)  # Дата заказа
+
 
     def __str__(self):
         return f"Заказ от {self.recipient_name} на адрес {self.address}"

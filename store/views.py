@@ -2,14 +2,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils.timezone import localtime
+
 from .models import Cart, CartItem, Product, Category, Order, OrderItem
 from .forms import CustomUserCreationForm, OrderForm
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
+from .utils import send_telegram_message
+
 
 class CustomLoginView(LoginView):
     template_name = 'store/login.html'
-
 
 
 def update_cart_item(request, item_id):
@@ -27,8 +30,6 @@ def update_cart_item(request, item_id):
             return JsonResponse({'success': True, 'quantity': cart_item.quantity})
 
         return JsonResponse({'success': False, 'error': 'Неверное значение'}, status=400)
-
-
 
     return JsonResponse({'success': False, 'error': 'Неверный метод запроса'}, status=400)
 
@@ -54,11 +55,6 @@ def product_detail(request, product_id):
     product_images = product.images.all()  # ✅ Получаем все фото продукта
     return render(request, 'store/product_detail.html', {'product': product, 'product_images': product_images})
 
-
-
-from django.shortcuts import redirect, get_object_or_404
-from django.http import JsonResponse
-from .models import Cart, CartItem, Product
 
 def add_to_cart(request, product_id):
     if request.method == "POST":
@@ -89,23 +85,6 @@ def add_to_cart(request, product_id):
 
     return JsonResponse({"success": False, "error": "Некорректный запрос"})
 
-# def add_to_cart(request, product_id):
-#     if request.method == "POST":
-#         try:
-#             product = get_object_or_404(Product, id=product_id)
-#             cart, created = Cart.objects.get_or_create(user=request.user)
-#             cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-#
-#             if not created:
-#                 cart_item.quantity += 1
-#                 cart_item.save()
-#
-#             return redirect("cart_view")
-#         except Exception as e:
-#             return JsonResponse({"success": False, "error": str(e)})
-#     # return redirect("cart_view")
-#     return JsonResponse({"success": False, "error": "Некорректный запрос"})
-
 
 def cart_view(request):
     # Проверяем, авторизован ли пользователь
@@ -120,12 +99,11 @@ def cart_view(request):
 
         cart, _ = Cart.objects.get_or_create(session_key=session_key)  # Корзина для анонимных
 
-    # 📌 Получаем товары из корзины
+    #  Получаем товары из корзины
     cart_items = CartItem.objects.filter(cart=cart)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
 
     return render(request, 'store/cart.html', {'cart_items': cart_items, 'total_price': total_price})
-
 
 
 def remove_cart_item(request, item_id):
@@ -159,7 +137,6 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, 'store/signup.html', {'form': form})
 
-
 @login_required
 def place_order(request):
     if request.method == "POST":
@@ -170,6 +147,7 @@ def place_order(request):
         if not recipient_name or not address or not phone_number:
             return JsonResponse({"success": False, "error": "Заполните все поля!"})
 
+        user = request.user
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=cart)
 
@@ -180,18 +158,42 @@ def place_order(request):
             user=request.user,
             recipient_name=recipient_name,
             address=address,
-            phone_number=phone_number
+            phone_number=phone_number,
+            email = user.email
         )
+
+        order_summary = []  # 🔹 Формируем текст с товарами
+        total_price = 0
 
         for item in cart_items:
             OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+            total_price += item.product.price * item.quantity
+            order_summary.append(f"{item.product.name} x {item.quantity} = {item.product.price * item.quantity} Som")
 
         cart_items.delete()
+
+        message = (
+                f"📦New ZAKAZ \n"
+                f"🌐{user.username}ni Accountidan galdi!\n"
+                f"📧 Accountni Emaili: {user.email}\n\n"
+                
+                f"📋Zakazni Danniylari! \n\n"
+                f"👤 Ismi: {recipient_name} \n"
+                f"📍 Adresi: {address}\n"
+                f"📱 Tel: {phone_number}\n\n"
+                f"⏳ Время заказа: {localtime(order.created_at).strftime('%d.%m.%Y %H:%M')}\n\n"  # ✅ Добавляем время заказа
+                f"🛒 Product:\n\n" + "\n".join(order_summary) + f"\n\n💰 Obshiy Baxosi: {total_price}som"
+        )
+        # ✅ Теперь отправляем только сообщение без фото
+        send_telegram_message(message)
+
         return JsonResponse({"success": True})
+
+    return render(request, "store/place_order.html")
 
 
 def order_success(request):
-    return render(request, 'order_success.html')
+    return render(request, 'store/order_success.html')
 
 
 def payment_view(request):

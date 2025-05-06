@@ -1,19 +1,33 @@
-# store/utils.py
 import requests
 from django.conf import settings
 
 
-def send_telegram_message(chat_id, message):
+def send_telegram_message(message, photo_urls=None):
     token = settings.TELEGRAM_BOT_TOKEN
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {"chat_id": chat_id, "text": message}
+    chat_id = 2024530107
+    url_text = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload_text = {"chat_id": chat_id, "text": message}
 
-    response = requests.post(url, data=payload)
-    data = response.json()
+    response_text = requests.post(url_text, json=payload_text)
 
-    if not data.get("ok"):
-        print(f"❌ Ошибка Telegram: {data}")
-        return False
+    if response_text.status_code != 200:
+        print(f"❌ Ошибка Telegram: {response_text.json()}")
 
-    return True
+    # 🔹 Отправляем все фото товаров (если есть)
+    if photo_urls:
+        for photo_url in photo_urls:
+            try:
+                image_response = requests.head(photo_url)
+                if image_response.status_code == 200:  # Фото доступно
+                    url_photo = f"https://api.telegram.org/bot{token}/sendPhoto"
+                    payload_photo = {"chat_id": chat_id, "photo": photo_url}
+                    response_photo = requests.post(url_photo, json=payload_photo)
 
+                    print(f"📷 Фото отправлено: {response_photo.json()}")
+                else:
+                    print(f"⚠️ Фото недоступно: {photo_url}")
+            except requests.exceptions.RequestException as e:
+                print(f"⚠️ Ошибка при проверке фото: {str(e)}")
+
+    print(f"✅ Сообщение отправлено: {response_text.json()}")
+    return response_text.json()
