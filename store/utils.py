@@ -1,10 +1,14 @@
+import os
+
 import requests
-from django.conf import settings
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def send_telegram_message(message, photo_urls=None):
-    token = settings.TELEGRAM_BOT_TOKEN
-    chat_id = 2024530107
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("CHAT_ID")
     url_text = f"https://api.telegram.org/bot{token}/sendMessage"
     payload_text = {"chat_id": chat_id, "text": message}
 
