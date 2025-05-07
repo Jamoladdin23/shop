@@ -14,9 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Content-Type": "application/json"
                 }
             })
-            .then(() => {
-                location.href = "/cart/"; // ✅ Вместо JSON просто открываем корзину
-            })
+            .then(response => response.json()) // Получаем ответ от сервера
+
+//            .then(() => {
+//                location.href = "/cart/"; // ✅ Вместо JSON просто открываем корзину
+//            })
             .then(data => {
                if (data.success) {
                   alert("Товар добавлен в корзину!");

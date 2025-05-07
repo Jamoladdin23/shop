@@ -15,7 +15,8 @@
 
     <div class="product-gallery">
         {% for image in product.images.all %}
-            <img src="{{ image.image.url }}" alt="Фото {{ product.name }}" class="gallery-image" style="width:100px; height:auto;">
+        <img src="{{ image.image.url }}" alt="Фото {{ product.name }}" class="gallery-image"
+             style="width:100px; height:auto;">
         {% endfor %}
     </div>
 
@@ -25,16 +26,16 @@
     <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 
 
+    <div class="buttons">
+        <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-    <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
+            <button type="submit" id="order-button">Заказать продукт</button>
 
-        <button type="submit" id="order-button">Заказать продукт</button>
-
-    </form>
-    <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
-
+        </form>
+        <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+    </div>
 
 </div>
 

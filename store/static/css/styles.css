@@ -211,6 +211,10 @@ footer {
     height: auto;
     min-height: 100vh;
     padding-bottom: 50px;
-}
 
+.product-detail .buttons {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 15px;
+}
 

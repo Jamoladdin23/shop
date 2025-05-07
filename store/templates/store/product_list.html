@@ -16,6 +16,16 @@
             <p>Цена: {{ product.price }}</p>
             <a href="{% url 'product_detail' product.id %}">Подробнее</a>
         </div>
+        <div class="buttons">
+        <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" id="order-button">Заказать продукт</button>
+
+        </form>
+        <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+    </div>
     </div>
     {% endfor %}
 </div>

@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.timezone import localtime
-
+import json
 from .models import Cart, CartItem, Product, Category, Order, OrderItem
 from .forms import CustomUserCreationForm, OrderForm
 from django.contrib import messages
@@ -18,20 +18,29 @@ class CustomLoginView(LoginView):
 def update_cart_item(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
 
-    if cart_item.cart and cart_item.cart.user != request.user:
+    # Проверка метода запроса (лучше сразу сделать)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Неверный метод запроса'}, status=400)
+
+    # Проверяем доступ к корзине
+    if cart_item.cart and cart_item.cart.user and cart_item.cart.user != request.user:
         return JsonResponse({'error': 'Нет доступа!'}, status=403)
 
-    if request.method == 'POST':
-        new_quantity = request.POST.get('quantity')
+    try:
+        data = json.loads(request.body.decode("utf-8"))  # Загружаем JSON-данные из запроса
+        new_quantity = data.get('quantity')  # Получаем количество из JSON
 
-        if new_quantity and new_quantity.isdigit() and int(new_quantity) > 0:
-            cart_item.quantity = int(new_quantity)
+        # Проверяем количество
+        if isinstance(new_quantity, int) and new_quantity > 0:
+            cart_item.quantity = new_quantity
             cart_item.save()
             return JsonResponse({'success': True, 'quantity': cart_item.quantity})
 
         return JsonResponse({'success': False, 'error': 'Неверное значение'}, status=400)
 
-    return JsonResponse({'success': False, 'error': 'Неверный метод запроса'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Ошибка обработки JSON'}, status=400)
+
 
 
 def category_list(request):
@@ -180,7 +189,7 @@ def place_order(request):
                 f"📋Zakazni Danniylari! \n\n"
                 f"👤 Ismi: {recipient_name} \n"
                 f"📍 Adresi: {address}\n"
-                f"📱 Tel: {phone_number}\n\n"
+                f"📱 Tel: {phone_number}\n"
                 f"⏳ Время заказа: {localtime(order.created_at).strftime('%d.%m.%Y %H:%M')}\n\n"  # ✅ Добавляем время заказа
                 f"🛒 Product:\n\n" + "\n".join(order_summary) + f"\n\n💰 Obshiy Baxosi: {total_price}som"
         )

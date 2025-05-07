@@ -137,7 +137,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # ✅ Путь для сб�
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-TELEGRAM_BOT_TOKEN = "7926324923:AAHeX4l3OW-C7xR0j7JEmZelsPy1R_APza4"
 
 
 # Default primary key field type
