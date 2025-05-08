@@ -15,7 +15,8 @@
 
     <div class="product-gallery">
         {% for image in product.images.all %}
-            <img src="{{ image.image.url }}" alt="Фото {{ product.name }}" class="gallery-image" style="width:100px; height:auto;">
+        <img src="{{ image.image.url }}" alt="Фото {{ product.name }}" class="gallery-image"
+             style="width:100px; height:auto;">
         {% endfor %}
     </div>
 
@@ -24,17 +25,30 @@
     <!-- CSRF-токен для JavaScript -->
     <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 
+    <div class="product-buttons">
 
+        <form method="post" action="{% url 'place_order_product' product.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+<!--                        <a href="{% url 'place_order' %}" class="checkout-btn">Оформить заказ</a>-->
 
-    <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
+                    <button type="submit" id="order-button">Zakaz</button>
+<!--                    <label for="quantity">Количество:</label>-->
+<!--                    <input type="number" name="quantity" id="quantity" value="1" min="1" required>-->
+                </form>
 
-        <button type="submit" id="order-button">Заказать продукт</button>
+<!--        <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">-->
+<!--            {% csrf_token %}-->
+<!--            {{ form.as_p }}-->
 
-    </form>
-    <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+<!--            <button type="submit" id="order-button">🚚 Zakaz</button>-->
 
+<!--        </form>-->
+        <button class="add-to-cart button" data-product-id="{{ product.id }}">
+            <i class="fas fa-shopping-cart"></i>
+        </button>
+        <!--        <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>-->
+    </div>
 
 </div>
 

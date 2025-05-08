@@ -191,6 +191,40 @@ def place_order(request):
 
     return render(request, "store/place_order.html")
 
+@login_required
+def place_order_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == "POST":
+        recipient_name = request.POST.get("recipient_name")
+        address = request.POST.get("address")
+        phone_number = request.POST.get("phone_number")
+        quantity = request.POST.get("quantity")
+
+        if not recipient_name or not address or not phone_number or not quantity:
+            return JsonResponse({"success": False, "error": "Заполните все поля!"})
+
+        user = request.user
+
+        # Создаем заказ
+        order = Order.objects.create(
+            user=user,
+            recipient_name=recipient_name,
+            address=address,
+            phone_number=phone_number,
+            email=user.email
+        )
+
+        # Добавляем товар
+        OrderItem.objects.create(order=order, product=product, quantity=int(quantity))
+        total_price = product.price * int(quantity)
+
+        message = f"📦 Новый заказ: {product.name} (x{quantity})\n💰 Сумма: {total_price} сом"
+        send_telegram_message(message)
+
+        return JsonResponse({"success": True})
+
+    return redirect('product_list')
 
 def order_success(request):
     return render(request, 'store/order_success.html')

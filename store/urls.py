@@ -25,7 +25,7 @@ urlpatterns = [
     path('payment/', views.payment_view, name='payment_view'),
     path('login/', auth_views.LoginView.as_view(template_name='store/login.html'), name='login'),
 
-    path('place_order/product/<int:product_id>/', views.place_order, name='place_order_product'),
+    path('place_order/product/<int:product_id>/', views.place_order_product, name='place_order_product'),
     path('place_order/', views.place_order, name='place_order'),
 
 

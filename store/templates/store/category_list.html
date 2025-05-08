@@ -7,7 +7,7 @@
 <ul>
     {% for category in categories %}
 
-    <div class="product-list">
+    <div class="category-list">
         <a href="{% url 'category_detail' category.id %}">{{ category.name }}</a>
     </div>
 

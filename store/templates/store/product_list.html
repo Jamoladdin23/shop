@@ -14,7 +14,29 @@
         {% endif %}
         <div>
             <p>Цена: {{ product.price }}</p>
-            <a href="{% url 'product_detail' product.id %}">Подробнее</a>
+            <a href="{% url 'product_detail' product.id %}" class="button-link">Batavsil</a>
+        </div>
+
+        <div>
+            <div class="product-buttons">
+<!-- id="order-form"-->
+                <form id="order-form" method="post" action="{% url 'place_order_product' product.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+<!--                        <a href="{% url 'place_order' %}" class="checkout-btn">Оформить заказ</a>-->
+                    <button onclick="placeOrderProduct({{ product.id }})">🚚 Zakaz</button>
+
+                    <button type="submit" id="order-button">Zakaz</button>
+<!--                    <label for="quantity">Количество:</label>-->
+<!--                    <input type="number" name="quantity" id="quantity" value="1" min="1" required>-->
+                </form>
+                <!--                <button class="add-to-cart button" data-product-id="{{ product.id }}">🛒</button>-->
+                <button class="add-to-cart button" data-product-id="{{ product.id }}">
+                    <i class="fas fa-shopping-cart"></i>
+                </button>
+
+                <!--                <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>-->
+            </div>
         </div>
     </div>
     {% endfor %}

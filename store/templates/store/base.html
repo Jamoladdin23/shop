@@ -16,6 +16,8 @@
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'apple-touch-icon-precomposed.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -24,11 +26,13 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/cart.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/rivets-cart.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/cart.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/shopify-cartjs/1.1.0/rivets-cart.min.js"></script>
     <script src="{% static 'js/aos.min.js' %}" defer></script>
     <script src="{% static 'js/utils.js' %}" defer></script>
-<!--    <script src="{% static 'js/cart.js' %}"></script>-->
+    <!--    <script src="{% static 'js/cart.js' %}"></script>-->
     <script src="{% static 'js/order.js' %}" defer></script>
     <script src="{% static 'js/cart.js' %}" defer></script>
 
@@ -36,8 +40,6 @@
     <script src="{% static 'js/animations.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.min.js"></script>
-
-
 
 
 </head>
@@ -49,7 +51,7 @@
         <h3>Urganch №1 Gamburghonasi</h3>
     </div>
 
-    <div>
+    <div class="header-buttons">
 
         <h5><a href="{% url 'product_list' %}">Dastavka zakaz</a></h5>
         <h5><a href="{% url 'category_list' %}">Kategoriya</a></h5>
@@ -57,22 +59,24 @@
     </div>
 
 
-    <div>
+    <div class="user-section">
         {% if user.is_authenticated %}
-        <p> {{ user.username }}!</p>
+        <p>Xush Galipsiz {{ user.username }}!</p>
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button type="submit">Chiqish</button>
+            <button type="submit" class="button">Chiqish</button>
         </form>
         {% else %}
         <a href="{% url 'login' %}" class="button">Girish</a>
         <a href="{% url 'signup' %}" class="button">Sign-up</a>
         {% endif %}
-        <a href="{% url 'cart_view' %}" class="button">Karzina</a>
-
     </div>
-</div>
 
+    <div class="cart-section">
+        <a href="{% url 'cart_view' %}" class="button">🛒 Karzina</a>
+    </div>
+
+</div>
 <div class="container">
     <main>
         {% block content %}
@@ -83,7 +87,7 @@
 
 
 <footer>
-    <p>&copy;  Мой Проект</p>
+    <p>&copy; Мой Проект</p>
 </footer>
 
 </body>
